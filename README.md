@@ -1,6 +1,6 @@
-***this is simplified (beginners friendly) version of my Flask app: https://github.com/emax-77/OpenMeteo-to-MySQL*** 
+***This is a simplified (beginners friendly) version of my Flask app: https://github.com/emax-77/OpenMeteo-to-MySQL*** 
 
-# Python code that collects data from the Open-Meteo API, stores it in a MySQL database, and displays it in a table.
+# Python code that collects data from the Open-Meteo API, stores it in a MySQL database and displays it in a table.
 
 ## Data for my GPS coordinates, you can change the coordinates in the script to get the weather data for your location.
 
