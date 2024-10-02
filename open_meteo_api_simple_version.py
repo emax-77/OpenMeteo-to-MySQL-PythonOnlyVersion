@@ -1,12 +1,13 @@
 import requests
 import mysql.connector
 from time import localtime, strftime, sleep
+import json
 
-# Database connection, replace with your own credentials
+# MySQL database connection - replace with your own credentials
 conn = mysql.connector.connect(
     host="localhost",  
     user="root",  
-    password="xxxxxxxxxx", 
+    password="xxxxxxxxxxx", 
     database="weather_data"  
 )
 # Create a cursor object
@@ -27,7 +28,7 @@ def get_weather_data():
                             )
     return response.json() 
 
-# Store data into database
+# Store data into MySQL database
 def store_weather_data(cycles):
     for i in range(cycles): 
         output = get_weather_data()
@@ -55,12 +56,37 @@ def print_database_contents():
         log_time_str = row[1].strftime("%d-%m-%Y %H:%M:%S")  # Format datetime 
         print(f"{row[0]:<5} {log_time_str:<20} {row[2]:<10} {row[3]:<10} {row[4]:<10} {row[5]:<10}")
 
+# Export data from MySQL database to a JSON file
+def export_to_json():
+    cursor.execute("SELECT * FROM temperature_log")
+    rows = cursor.fetchall()
+    
+    # Defining keys for JSON structure
+    data = []
+    for row in rows:
+        data.append({
+            "id": row[0],
+            "log_time": row[1].strftime("%Y-%m-%d %H:%M:%S"),
+            "temperature": row[2],
+            "relative_humidity": row[3],
+            "surface_pressure": row[4],
+            "wind_speed": row[5]
+        })
+
+    # Export to a JSON file
+    with open("weather_data.json", "w") as json_file:
+        json.dump(data, json_file, indent=4)
+    print("Data has been exported to weather_data.json")
+
 # Ask user for the number of cycles to run
 total_cycles = int(input("How many cycles do you want to run? (one cycle is 5 second) "))
 print ()
 
 store_weather_data(total_cycles)
+print ()
 print_database_contents()
+print ()
+export_to_json()
 
 # Close the cursor and connection
 cursor.close()
